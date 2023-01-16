@@ -35,13 +35,16 @@ def background_session():
 
     shell_proc = processes[-1]
     shell_proc.send_signal(signal.SIGSTOP)
+
+    print_menu()
     #p = subprocess.Popen(["bg", str(shell_proc.pid)])
-    processes.append(p)
+    #processes.append(p)
 
 def list_sessions():
     # List all running sessions
     for i, p in enumerate(processes):
         print(f"{i+1}. Session {i+1} (PID: {p.pid})")
+    
 
 def resume_session():
     # Resume background sessions
@@ -50,7 +53,7 @@ def resume_session():
     p = processes[session_number-1]
     p.send_signal(signal.SIGCONT)
     #subprocess.Popen(["fg", str(p.pid)])
-
+    listen_background_session()
     resume = True
 
 
@@ -68,11 +71,11 @@ def listen_background_session():
 
 def print_menu():
     resume = False
-    print("1. Reverse shell")
+    print("\n\n1. Reverse shell")
     print("2. Bind shell")
     #print("3. Background session")
-    print("3. List sessions")
-    print("4. Resume session")
+    #print("3. List sessions")
+    print("3. Resume session")
     choice = input("\n[*]Enter your choice: ")
 
     if choice == "1":
@@ -81,9 +84,9 @@ def print_menu():
         bind_shell()
     #elif choice == "3":
     #    background_session()
+    #elif choice == "3":
+    #    list_sessions()
     elif choice == "3":
-        list_sessions()
-    elif choice == "4":
         resume_session()
     else:
         print("Invalid choice")
