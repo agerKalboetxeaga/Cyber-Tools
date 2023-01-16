@@ -1,6 +1,6 @@
 #!/usr/bin/python
 #!/usr/bin/python
-import subprocess, sys, select, threading
+import subprocess, sys, select, threading, signal
 
 ###########
 #Netcat shell menu in coop with chat gpt3
@@ -34,7 +34,8 @@ def background_session():
     # Background the current session
 
     shell_proc = processes[-1]
-    p = subprocess.Popen(["bg", str(shell_proc.id)])
+    shell_proc.send_signal(signal.SIGSTOP)
+    #p = subprocess.Popen(["bg", str(shell_proc.pid)])
     processes.append(p)
 
 def list_sessions():
@@ -47,7 +48,8 @@ def resume_session():
     list_sessions()
     session_number = int(input("\nEnter the session number you want to resume: "))
     p = processes[session_number-1]
-    subprocess.Popen(["fg", str(p.pid)])
+    p.send_signal(signal.SIGCONT)
+    #subprocess.Popen(["fg", str(p.pid)])
 
     resume = True
 
